@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
     do {
         count++
         val value = list[index]
-        list[index] = value + 1
+        list[index] = if (value > 2) value - 1 else value + 1
         index += value
     } while (index >= 0 && index < list.size)
 
