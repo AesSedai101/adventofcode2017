@@ -11,10 +11,15 @@ fun main(args: Array<String>) {
         lines.forEach { line ->
             val values = line.split(" ", "\t").map { v ->
                 v.toInt()
+            }.sortedDescending()
+            val size = values.size
+            values.forEachIndexed { i, v ->
+                for (j in i + 1 until size) {
+                    if (v % values[j] == 0) {
+                        check += v / values[j]
+                    }
+                }
             }
-            val max = values.max()
-            val min = values.min()
-            check += (max!! - min!!)
         }
     }
     print(check)
