@@ -9,9 +9,12 @@ fun main(args: Array<String>) {
     inputStream.bufferedReader().useLines { lines ->
         lines.forEach { line ->
             var count = 0;
+            var cycleCount = 0;
             var hashes = mutableSetOf<Int>()
+            var cycleOfHash = mutableMapOf<Int, Int>()
             var values = line.split("\t").map { s -> s.trim().toInt() }.toIntArray()
             hashes.add(values.contentHashCode())
+            cycleOfHash.put(values.contentHashCode(), 0)
 
             while (true) {
                 val maxIndex = values.indexOf(values.max()!!)
@@ -29,8 +32,9 @@ fun main(args: Array<String>) {
                     break;
                 }
                 hashes.add(code)
+                cycleOfHash.put(code, count)
             }
-            println(count.toString())
+            println(count.toString() + " " + (count - cycleOfHash.get(values.contentHashCode())!!))
         }
     }
 }
