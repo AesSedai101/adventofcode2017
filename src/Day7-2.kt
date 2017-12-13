@@ -8,42 +8,37 @@ fun main(args: Array<String>) {
     val inputStream: InputStream = File("input/day7.txt").inputStream()
     val input = mutableMapOf<String, Pair<String, List<String>>>()
 
-    inputStream.bufferedReader().useLines { lines ->
-        lines.forEach { line ->
-            val name = line.substring(0, line.indexOf(" ")).trim()
-            val startIndex = line.indexOf("->")
-            var children: List<String> = mutableListOf()
-            if (startIndex != -1) {
-                children = line.substring(startIndex + 2).trim().split(",").map { s -> s.trim() }
+    inputStream.bufferedReader().forEachLine { line ->
+        val name = line.substring(0, line.indexOf(" ")).trim()
+        val startIndex = line.indexOf("->")
+        var children: List<String> = mutableListOf()
+        if (startIndex != -1) {
+            children = line.substring(startIndex + 2).trim().split(",").map { s -> s.trim() }
 
-            }
-            val weight = line.substring(line.indexOf("(") + 1, line.indexOf(")"))
-            input.put(name, Pair(weight, children))
         }
+        val weight = line.substring(line.indexOf("(") + 1, line.indexOf(")"))
+        input.put(name, Pair(weight, children))
     }
 
     val programRoot = Processor(input).build()
     process(programRoot)
-    printProgram(programRoot)
 }
 
-fun process(program: Program) {
-    val children = program.children
-    for (i in 0..children.size - 2) {
-        var count = 0
-        var d = 0
-        for (j in i+1 until children.size) {
-            val diff = children[i].calc() - children[j].calc()
-            if (diff != 0) {
-                count++
-                d = diff
+fun process(program: Program, diff : Int = 0){
+    println(program.name + " [" + program.weight.toString() + "] -> " + program.calc())
+    // figure out if this is funky, or if it got the funky from a child
+    val weights = program.children.map { c -> c.calc() }
+    val weightSet = weights.toSet()
+    if (weightSet.size > 1) {
+        // it's one of the kids
+        program.children.forEach { c ->
+            if (weights.count { i -> i == c.calc() } == 1) {
+                process(c, c.calc() - weightSet.first { i -> i != c.calc() })
             }
         }
-        if (count > 1) {
-            val p = children[i]
-            println(p.name + " " + p.weight.toString() + " " + d.toString() + " -> " + (p.weight - d).toString())
-            process(p)
-        }
+    } else {
+        // it's this one
+        println("[" + diff.toString()+ "] " + (program.weight + diff).toString() + " or " + (program.weight - diff).toString())
     }
 }
 
@@ -82,7 +77,7 @@ class Program(val weight: Int, val name: String) {
     val children = mutableListOf<Program>()
     fun calc(): Int {
         var total = weight
-        children.forEach {  c -> total += c.calc() }
+        children.forEach { c -> total += c.calc() }
         return total
     }
 }
