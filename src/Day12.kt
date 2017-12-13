@@ -13,12 +13,22 @@ fun main(args: Array<String>) {
         connections.put(split[0].trim(), split[1].trim().split(",").map { s -> s.trim() })
     }
 
+    val unprocessedList = connections.keys.toMutableList()
     val connectedList = mutableSetOf("0")
-    while(true) {
-        // find the first entry that is still in the map
-        val entry = connectedList.firstOrNull { s -> connections.containsKey(s) } ?: break
-        connectedList.addAll(connections.remove(entry).orEmpty())
+    var groupCount = 1 // always have at least one group
 
+    while(!unprocessedList.isEmpty()) {
+        // process the connectedList
+        val entry = connectedList.firstOrNull { s -> unprocessedList.contains(s) }
+        if (entry == null) {
+            // we are done with this group
+            groupCount++
+            connectedList.clear()
+            connectedList.add(unprocessedList.get(0))
+        } else {
+            unprocessedList.remove(entry)
+            connectedList.addAll(connections[entry].orEmpty())
+        }
     }
-    println(connectedList.size.toString())
+    println(groupCount.toString())
 }
