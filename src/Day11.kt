@@ -9,30 +9,39 @@ fun main(args: Array<String>) {
     inputStream.bufferedReader().lines().forEach { l ->
         println(l)
         val list = l.split(",").map { s -> s.trim().toLowerCase() }
-        val directions = "n,s,ne,nw,se,sw".split(",")
-        val dirCount = mutableMapOf<String, Int>()
 
-        directions.forEach { d -> dirCount.put(d, list.count { s -> s == d }) }
-
-        // cancel out opposites
-        cancelOutOpposites(dirCount, "s", "n")
-        cancelOutOpposites(dirCount, "sw", "ne")
-        cancelOutOpposites(dirCount, "se", "nw")
-        // cancel out adjacents
-        do {
-            var changed = false;
-            changed = changed || adjacents(dirCount, "sw", "s", "se")
-            changed = changed || adjacents(dirCount, "s", "se", "ne")
-            changed = changed || adjacents(dirCount, "se", "ne", "n")
-            changed = changed || adjacents(dirCount, "ne", "n", "nw")
-            changed = changed || adjacents(dirCount, "n", "nw", "sw")
-            changed = changed || adjacents(dirCount, "nw", "sw", "s")
-        } while (changed);
-
-        var sum = 0
-        dirCount.forEach { t, u -> sum += u }
-        println(sum.toString())
+        var max = 0
+        for (i in 1..list.size) {
+            max = kotlin.math.max(max, calculate(list.subList(0, i)))
+        }
+        println(max)
     }
+}
+
+fun calculate(list: List<String>) : Int {
+    val directions = "n,s,ne,nw,se,sw".split(",")
+    val dirCount = mutableMapOf<String, Int>()
+
+    directions.forEach { d -> dirCount.put(d, list.count { s -> s == d }) }
+
+    // cancel out opposites
+    cancelOutOpposites(dirCount, "s", "n")
+    cancelOutOpposites(dirCount, "sw", "ne")
+    cancelOutOpposites(dirCount, "se", "nw")
+    // cancel out adjacents
+    do {
+        var changed = false;
+        changed = changed || adjacents(dirCount, "sw", "s", "se")
+        changed = changed || adjacents(dirCount, "s", "se", "ne")
+        changed = changed || adjacents(dirCount, "se", "ne", "n")
+        changed = changed || adjacents(dirCount, "ne", "n", "nw")
+        changed = changed || adjacents(dirCount, "n", "nw", "sw")
+        changed = changed || adjacents(dirCount, "nw", "sw", "s")
+    } while (changed);
+
+    var sum = 0
+    dirCount.forEach { t, u -> sum += u }
+    return sum
 }
 
 fun adjacents(count: MutableMap<String, Int>, left: String, middle: String, right: String): Boolean {
