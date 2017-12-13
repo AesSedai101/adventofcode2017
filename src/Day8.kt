@@ -1,5 +1,6 @@
 import java.io.File
 import java.io.InputStream
+import kotlin.math.max
 import kotlin.streams.toList
 
 /**
@@ -10,6 +11,8 @@ fun main(args: Array<String>) {
     val list = inputStream.bufferedReader().lines().map { l -> Instruction(l) }.toList()
 
     val registerValues = mutableMapOf<String, Int>()
+    var maxValue = 0
+
     list.forEach { op ->
         val conditionRegisterValue = registerValues.getOrDefault(op.condition.register, 0)
         if (op.condition.match(conditionRegisterValue)) {
@@ -17,9 +20,13 @@ fun main(args: Array<String>) {
             val register = op.register
             val value = registerValues.getOrDefault(register, 0)
             if (op.opInc) {
-                registerValues.put(register, value + op.opValue)
+                val newValue = value + op.opValue
+                registerValues.put(register, newValue)
+                maxValue = max(maxValue, newValue)
             } else {
-                registerValues.put(register, value - op.opValue)
+                val newValue = value - op.opValue
+                registerValues.put(register, newValue)
+                maxValue = max(maxValue, newValue)
             }
         }
     }
@@ -28,6 +35,7 @@ fun main(args: Array<String>) {
         s.value
     }
     println(max.toString())
+    println(maxValue.toString())
 }
 
 class Instruction(line: String) {
