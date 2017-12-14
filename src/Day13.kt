@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
     val lastWall = walls.maxBy { entry -> entry.key }!!.key
 
     var delay = 0
-    while(true) {
+    while (true) {
         val c = hasCollision(delay, lastWall, walls)
         if (c) {
             delay++
@@ -44,6 +44,5 @@ private fun hasCollision(delay: Int, lastWall: Int, walls: MutableMap<Int, Int>)
 
 fun calcPos(tick: Int, range: Int): Int {
     val offset = tick % ((range - 1) * 2)
-    return if (offset > range - 1) 2 * (range - 1) - offset  else offset
+    return if (offset > range - 1) 2 * (range - 1) - offset else offset
 }
-

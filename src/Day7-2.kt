@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
     process(programRoot)
 }
 
-fun process(program: Program, diff : Int = 0){
+fun process(program: Program, diff: Int = 0) {
     println(program.name + " [" + program.weight.toString() + "] -> " + program.calc())
     // figure out if this is funky, or if it got the funky from a child
     val weights = program.children.map { c -> c.calc() }
@@ -38,7 +38,7 @@ fun process(program: Program, diff : Int = 0){
         }
     } else {
         // it's this one
-        println("[" + diff.toString()+ "] " + (program.weight + diff).toString() + " or " + (program.weight - diff).toString())
+        println("[" + diff.toString() + "] " + (program.weight + diff).toString() + " or " + (program.weight - diff).toString())
     }
 }
 

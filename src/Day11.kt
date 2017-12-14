@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
     }
 }
 
-fun calculate(list: List<String>) : Int {
+fun calculate(list: List<String>): Int {
     val directions = "n,s,ne,nw,se,sw".split(",")
     val dirCount = mutableMapOf<String, Int>()
 

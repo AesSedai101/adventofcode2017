@@ -20,7 +20,7 @@ fun main(args: Array<String>) {
             }
             values.put(Pair(block, j), value)
         }
-        for (j in  block - 1 downTo -block) {
+        for (j in block - 1 downTo -block) {
             //0,-1 -> -1,-1 top row
             val value = calculate(values, j, -block)
             if (value > input) {
@@ -29,7 +29,7 @@ fun main(args: Array<String>) {
             }
             values.put(Pair(j, -block), value)
         }
-        for (j in -block+1..block) {
+        for (j in -block + 1..block) {
             // -1, 0 -> -1,1 left column
             val value = calculate(values, -block, j)
             if (value > input) {
@@ -39,7 +39,7 @@ fun main(args: Array<String>) {
             values.put(Pair(-block, j), value)
         }
 
-        for (j in -block+1..block) {
+        for (j in -block + 1..block) {
             // 0, 1 -> 1, 1 bottom row
             val value = calculate(values, j, block)
             if (value > input) {

@@ -17,7 +17,7 @@ fun main(args: Array<String>) {
     val connectedList = mutableSetOf("0")
     var groupCount = 1 // always have at least one group
 
-    while(!unprocessedList.isEmpty()) {
+    while (!unprocessedList.isEmpty()) {
         // process the connectedList
         val entry = connectedList.firstOrNull { s -> unprocessedList.contains(s) }
         if (entry == null) {
