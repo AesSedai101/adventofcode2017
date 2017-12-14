@@ -2,26 +2,32 @@
  * @author elsabe.ros
  */
 fun main(args: Array<String>) {
+    val input = "206,63,255,131,65,80,238,157,254,24,133,2,16,0,1,3"
+    val hashString = calculateHash(input)
+    println(hashString)
+}
+
+fun calculateHash(input: String): String {
     val list = mutableListOf(0..255).flatten().toMutableList()
-    val instructions = "206,63,255,131,65,80,238,157,254,24,133,2,16,0,1,3".toCharArray().map { s -> s.toInt() }.toIntArray() + intArrayOf(17, 31, 73, 47, 23)
+    val instructions = input.toCharArray().map { s -> s.toInt() }.toIntArray() + intArrayOf(17, 31, 73, 47, 23)
 
     var index = 0
     var skipSize = 0
 
-    for(z in 1..64) {
+    for (z in 1..64) {
         instructions.forEach { i ->
             val end = (index + i - 1)
             swap(list, index, end)
             index = (index + i + skipSize) % list.size
             skipSize++
-            println(list)
+            //println(list)
         }
     }
 
     // calculate dense hash
     val denseHash = mutableListOf<Int>()
     var x = 0
-    while(x < list.size) {
+    while (x < list.size) {
         var hash = list[x]
         for (i in 1 until 16) {
             hash = hash xor list[x + i]
@@ -29,9 +35,15 @@ fun main(args: Array<String>) {
         x += 16
         denseHash.add(hash)
     }
+    var hashString = ""
     denseHash.forEach { i ->
-        print(i.toString(16))
+        var resultString = i.toString(16)
+        if (resultString.length < 2) {
+            resultString = "0" + resultString
+        }
+        hashString += resultString
     }
+    return hashString
 }
 
 fun swap(list: MutableList<Int>, start: Int, end: Int): MutableList<Int> {
