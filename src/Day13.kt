@@ -15,21 +15,31 @@ fun main(args: Array<String>) {
 
     val lastWall = walls.maxBy { entry -> entry.key }!!.key
 
-    var tick = 0
-    var cost = 0
+    var delay = 0
+    while(true) {
+        val c = hasCollision(delay, lastWall, walls)
+        if (c) {
+            delay++
+        } else {
+            break;
+        }
+    }
+    println(delay.toString())
+}
 
+private fun hasCollision(delay: Int, lastWall: Int, walls: MutableMap<Int, Int>): Boolean {
+    var tick = 0
     while (tick <= lastWall) {
-        print(walls, tick)
         val range = walls[tick]
-        if (range != null) { // is there a wall at this tick
-            val scanPos = calcPos(tick, range)
+        if (range != null) { // is there a wall at this delay
+            val scanPos = calcPos(tick + delay, range)
             if (scanPos == 0) {
-                cost += tick * range
+                return true
             }
         }
         tick++
     }
-    println("Cost: " + cost.toString())
+    return false
 }
 
 fun calcPos(tick: Int, range: Int): Int {
