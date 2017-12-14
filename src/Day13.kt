@@ -43,36 +43,7 @@ private fun hasCollision(delay: Int, lastWall: Int, walls: MutableMap<Int, Int>)
 }
 
 fun calcPos(tick: Int, range: Int): Int {
-    val spread = range + range - 2
-    var upTickStart = 0
-    while (upTickStart + spread <= tick) {
-        upTickStart += spread
-    }
-    // the tick falls in the range upTickStart..(upTickStart + spread - 1)
-    if (tick < upTickStart + range) {
-        return tick % (spread)
-    } else {
-        return (upTickStart + spread) - tick
-    }
+    val offset = tick % ((range - 1) * 2)
+    return if (offset > range - 1) 2 * (range - 1) - offset  else offset
 }
 
-fun print(walls: Map<Int, Int>, tick: Int) {
-    val lastWall = walls.maxBy { entry -> entry.key }!!.key
-    for (i in 0..lastWall) {
-        print("[$i]")
-        val range = walls[i]
-        if (tick == i) {
-            print("*")
-        } else {
-            print("|")
-        }
-        if (range != null) {
-            val scanPos = calcPos(tick, range)
-            for (j in 0..range) {
-                print(if (scanPos == j) "S|" else "  |")
-            }
-        }
-        println()
-    }
-    println()
-}
