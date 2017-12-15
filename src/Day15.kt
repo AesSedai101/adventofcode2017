@@ -5,11 +5,11 @@
 val divisor = 2147483647;
 
 fun main(args: Array<String>) {
-    val genA = Generator(16807, 512)
-    val genB = Generator(48271, 191)
+    val genA = Generator(16807, 512, 4)
+    val genB = Generator(48271, 191, 8)
 
     var count = 0;
-    for (i in 0 until 40_000_000) {
+    for (i in 0 until 5_000_000) {
         val one = genA.calculate()
         val two = genB.calculate()
         if (lowerMatch(one.toInt(), two.toInt())) {
@@ -24,9 +24,11 @@ fun lowerMatch(x: Int, y: Int): Boolean {
 }
 
 
-class Generator(private val factor: Long, private var start: Long) {
+class Generator(private val factor: Long, private var start: Long, private val multiplier: Int) {
     fun calculate(): Long {
-        start = (start * factor) % divisor
+        do {
+            start = (start * factor) % divisor
+        } while ((start % multiplier) != 0L)
         return start
     }
 
