@@ -10,29 +10,30 @@ fun main(args: Array<String>) {
         val instructions = line.split(",").map { s -> s.trim() }
 
         val initial = listOf('a'..'p').flatten().toCharArray()
-        val oneRound = compute(instructions, initial.copyOf())
+        val rounds = 1000000000
 
-        initial.forEach { d -> print(d) }
-        println()
-        oneRound.forEach { d -> print(d) }
-        println()
-
-        val changes = mutableMapOf<Int, Int>()
-        for(i in 0..15) {
-            changes.put(i, oneRound.indexOf(initial[i]))
+        /*println("Manual")
+        var manual = initial.copyOf()
+        for (i in 1..rounds) {
+            manual = compute(instructions, manual)
         }
+        manual.forEach { d -> print(d) }
+        println()*/
 
-        var dancers = initial.copyOf()
-        for(i in 0 until 1000000000) {
-            val new = dancers.copyOf()
-            changes.forEach{ k, v ->
-                new[v] = dancers[k]
+        println("Smarty")
+        val valueMap = mutableMapOf<String, CharArray>()
+        var start = initial.copyOf()
+        for (i in 1..rounds) {
+            val key = start.toList().toString()
+            if (valueMap.containsKey(key)) {
+                start = valueMap.get(key)!!
+            } else {
+                start = compute(instructions, start)
+                valueMap.put(key, start)
             }
-            dancers = new
-            dancers.forEach { d -> print(d) }
-            println()
         }
-        dancers.forEach { d -> print(d) }
+        println()
+        start.forEach { d -> print(d) }
         println()
     }
 }
