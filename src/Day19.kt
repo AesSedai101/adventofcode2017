@@ -29,33 +29,32 @@ fun main(args: Array<String>) {
         row++
     }
 
+    var count = 0
     var direction = DOWN
     var position: Pair<Int, Int> = map.filter { (k, v) ->
         k.first == 0 && v == '|'
     }.entries.first().key
 
     while (true) {
-        val c = map.get(position)
+        val c = map[position]
+        count++
         when (c) {
             null -> {
+                println()
+                println((count - 1).toString() + " steps")
                 return
             }
             '+' -> {
-                // the direction of the path changes
                 val dirs = directions.filter { d -> d != direction && d != direction.opposite() }
                 dirs.forEach { d ->
-                    if (map.contains(position + d)) {
-                        direction = d
-                    }
+                    if (map.contains(position + d)) direction = d
                 }
-                position = position + direction
+                position += direction
             }
             '|', '-' -> {
-                // continue as per normal
                 position += direction
             }
             else -> {
-                // print character and continue as per normal
                 print(c)
                 position += direction
             }
