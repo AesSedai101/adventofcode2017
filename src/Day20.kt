@@ -1,4 +1,3 @@
-import javafx.geometry.Pos
 import java.io.File
 import java.io.InputStream
 
@@ -12,25 +11,27 @@ fun main(args: Array<String>) {
         list.add(Particle(line))
     }
 
-    for(i in 0..10000) {
-        var distance = Int.MAX_VALUE
-        var closest : Particle? = null
+    for (i in 0..list.size) {
         list.forEach { v ->
-            val dis = v.update()
-            if (dis < distance) {
-                distance = dis
-                closest = v
+            v.update()
+        }
+        val set = list.distinctBy { it.position() }
+        if (list.size != set.size) {
+            // there are particles occupying the same space
+            set.forEach{ particle ->
+                val matches = list.filter { it.equals(particle) }
+                if (matches.size > 1) {
+                    list.removeAll(matches)
+                }
+
             }
         }
-        closest!!.inc()
     }
 
-    val p = list.maxBy { it.closest }
-    println(list.indexOf(p))
+    println(list.size.toString())
 }
 
 class Particle(line: String) {
-    var closest = 0
     private val position: Position
     private val velocity: Position
     private val acceleration: Position
@@ -52,16 +53,20 @@ class Particle(line: String) {
         acceleration = Position(ax, ay, az)
     }
 
-    fun inc() {
-        closest += 1
-    }
-
     fun update(): Int {
         velocity += acceleration;
         position += velocity
         return Math.abs(position.x) + Math.abs(position.y) + Math.abs(position.z)
     }
 
+
+    fun equals(p: Particle): Boolean {
+        return position == p.position
+    }
+
+    fun position(): Position {
+        return position
+    }
 }
 
 data class Position(var x: Int, var y: Int, var z: Int) {
@@ -69,5 +74,9 @@ data class Position(var x: Int, var y: Int, var z: Int) {
         x += p.x
         y += p.y
         z += p.z
+    }
+
+    fun equals(p: Position): Boolean {
+        return x == p.x && y == p.y && z == p.z
     }
 }
