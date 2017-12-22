@@ -9,7 +9,6 @@ fun main(args: Array<String>) {
     val mapping = mutableMapOf<String, String>()
     inputStream.bufferedReader().lines().forEach { line ->
         val (k, v) = line.split("=>").map { it.trim() }
-
         mapping.put(k, v)
         var key = k
         for (i in 0..2) {
@@ -20,7 +19,7 @@ fun main(args: Array<String>) {
     }
 
     var board = stringToBoard(".#./..#/###")
-    repeat(5, {
+    repeat(18, {
         if (board.size % 2 == 0) {
             board = expandBoard(2, mapping, board)
         } else {
