@@ -11,8 +11,11 @@ fun main(args: Array<String>) {
         instructions.add(Instr(line))
     }
 
+
     val registers = mutableMapOf<String, Long>()
     registers.put("a", 0)
+    registers.put("b", 106700)
+    registers.put("c", 123700)
     var index = 0
     var mulCount = 0
 
