@@ -11,11 +11,13 @@ fun main(args: Array<String>) {
         instructions.add(Instr(line))
     }
 
-
     val registers = mutableMapOf<String, Long>()
     registers.put("a", 0)
     registers.put("b", 106700)
     registers.put("c", 123700)
+    // it terminates when b == c (lines 19-24)
+    // at the end of the loop, b is incremented by 17 (line 23)
+    // h is incremented if f == 0 (lines 17-18)
     var index = 0
     var mulCount = 0
 
