@@ -11,32 +11,40 @@ fun main(args: Array<String>) {
         connectors.add(Connector(line))
     }
 
-    var max = Int.MIN_VALUE
+    var maxLength = Int.MIN_VALUE
+    var maxScore = Int.MIN_VALUE
     connectors.filter { it -> it.A == 0 }.forEach { c ->
-        val v = buildBridge(c.selectA(), connectors.filter { it != c }, "")
-        if (v > max) {
-            max = v
+        val (score, length) = buildBridge(c.selectA(), connectors.filter { it != c }, "")
+        if (length > maxLength) {
+            maxScore = score
+            maxLength = length
+        } else if (length == maxLength && score > maxScore) {
+            maxScore = score
         }
     }
-    println(max.toString())
+    println(maxScore.toString())
 }
 
-fun buildBridge(c: Connector, connectors: List<Connector>, prep: String): Int {
+fun buildBridge(c: Connector, connectors: List<Connector>, prep: String): Pair<Int, Int> {
     //println(prep + "- " + c.A + "/" + c.B + " [" + c.SCORE + "]")
     // find all matches
-    val matches = connectors.filter { c.notSelected() == it.A || c.notSelected() == it.B}.sortedByDescending { c.SCORE }
+    val matches = connectors.filter { c.notSelected() == it.A || c.notSelected() == it.B }.sortedByDescending { c.SCORE }
     if (matches.isEmpty()) {
-        return c.SCORE
+        return Pair(c.SCORE, 1)
     }
     // and try them all
-    var max = Int.MIN_VALUE
+    var maxLenght = Int.MIN_VALUE
+    var maxScore = 0
     matches.forEach { m ->
-        val v = buildBridge(m.select(c.notSelected()), connectors.filter { it != m }, prep + " ")
-        if (v > max) {
-            max = v
+        val (score, length) = buildBridge(m.select(c.notSelected()), connectors.filter { it != m }, prep + " ")
+        if (length > maxLenght) {
+            maxLenght = length
+            maxScore = score
+        } else if (length == maxLenght && score > maxScore) {
+            maxScore = score
         }
     }
-    return c.SCORE + max
+    return Pair(c.SCORE + maxScore, maxLenght + 1)
 }
 
 class Connector(line: String) {
